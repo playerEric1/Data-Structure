@@ -1,20 +1,28 @@
 #ifndef HW9_QUERY_H
 #define HW9_QUERY_H
+
 #include <string>
 #include "MovieData.h"
 
 class Query {
 public:
-    explicit Query(std::istream& stream);
-    std::string gettitle(){return title;}
-    std::pair<Query, std::list<MovieData> > compare(std::list<MovieData> &movielist);
+
+    Query(const std::string& atitle, int ayear, int aruntime, const std::list<std::string>& aGenre,
+          const std::list<std::string>& aActor, const std::list<std::string>& aRole) :
+    title(atitle), year(ayear), runtime(aruntime),
+    GenreList(aGenre), ActorList(aActor), RoleList(aRole) {};
+
+    explicit Query(std::istream &stream);
+
+    std::pair<Query, std::list<MovieData*> > compare(std::list<MovieData> &movielist);
+
     std::string long_str();
+
 private:
+    //REPRESENTATION
     std::string title;
     int year, runtime;
-    std::list<std::string> GenreList,ActorList,RoleList;
+    std::list<std::string> GenreList, ActorList, RoleList;
 };
 
-
-
-#endif //HW9_QUERY_H
+#endif
