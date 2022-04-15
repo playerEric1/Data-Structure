@@ -1,77 +1,109 @@
 #include "Query.h"
-Query::Query(std::istream& movie_file) {
+Query::Query(std::istream &movie_file) {
     std::string str;
     int tmpint;
-    movie_file>>title>>year>>runtime;
-    std::cout<<title<<" ";
+    year=0;
+    runtime=0;
+    movie_file >> title >> year >> runtime >> tmpint;
 
-    movie_file>>tmpint;
-    for (int i=0;i<tmpint;i++){
-        movie_file>>str;
-        GenreList.push_back(str);
+    for (int i = 0; i < tmpint; i++) {
+        movie_file >> str;
+        if (str!="")
+            GenreList.push_back(str);
     }
-    movie_file>>tmpint;
-    for (int i=0;i<tmpint;i++){
-        movie_file>>str;
-        ActorList.push_back(str);
+    movie_file >> tmpint;
+    for (int i = 0; i < tmpint; i++) {
+        movie_file >> str;
+        if (str!="")
+            ActorList.push_back(str);
     }
-    movie_file>>tmpint;
-    for (int i=0;i<tmpint;i++){
-        movie_file>>str;
-        RoleList.push_back(str);
+    movie_file >> tmpint;
+    for (int i = 0; i < tmpint; i++) {
+        movie_file >> str;
+        if (str!="")
+            RoleList.push_back(str);
     }
 }
 
 // find movies that satisfy Query and make them a value of the hashtable
-std::pair<Query, std::list<MovieData> > Query::compare(std::list<MovieData>& movielist){
-    std::list<MovieData> result;
-    for (std::list<MovieData>::iterator itr=movielist.begin();itr!=movielist.end();itr++){
-        if (title!=itr->gettitle()){
-            continue;
+std::pair<Query, std::list<MovieData*> > Query::compare(std::list<MovieData> &movielist) {
+
+    std::list<MovieData*> result;
+
+    for (std::list<MovieData>::iterator itr = movielist.begin(); itr != movielist.end(); itr++) {
+
+        bool fill_requirement = true;
+        if (title != "?" && title != itr->gettitle()) {
+            fill_requirement = false;
         }
-        result.push_back(*itr);
-        return std::make_pair(*this,result);
+
+        if (year!=0 && year != itr->getyear()) {
+            fill_requirement = false;
+        }
+
+        if (runtime != 0 && runtime != itr->getruntime()) {
+            fill_requirement = false;
+        }
+
+        std::list<std::string>::const_iterator old_iter, iter;
+        if (GenreList.size() != 0) {
+            std::list<std::string> tmpgenre(itr->getgenre());
+            old_iter = tmpgenre.cbegin();
+            iter = GenreList.cbegin();
+            while (iter != GenreList.cend() && old_iter != tmpgenre.cend()){
+                if (*iter != *old_iter) {
+                    fill_requirement = false;
+                }
+                old_iter++;
+                iter++;
+            }
+        }
+
+        if (RoleList.size() != 0) {
+            std::list<std::string> tmprole(itr->getrole());
+            old_iter = tmprole.cbegin();
+            iter = RoleList.cbegin();
+            while (iter != RoleList.cend() && old_iter != tmprole.cend()){
+                if (*iter != *old_iter) {
+                    fill_requirement = false;
+                }
+                old_iter++;
+                iter++;
+            }
+        }
+
+        if (ActorList.size() != 0) {
+            std::list<std::string> tmpactor(itr->getactor());
+            old_iter = tmpactor.cbegin();
+            iter = ActorList.cbegin();
+            while (old_iter != tmpactor.cend() && iter != ActorList.cend()){
+
+                if (*iter != *old_iter) {
+                    fill_requirement = false;
+                }
+                old_iter++;
+                iter++;
+            }
+        }
+
+        if (fill_requirement) result.push_back(&*itr);
     }
+    return std::make_pair(*this, result);
 }
 
 // generate a string for itself to make a hash
-std::string Query::long_str(){
-    std::string ret="";
-    ret+=title+std::to_string(year)+std::to_string(runtime);
-    for(std::list<std::string>::iterator iter = GenreList.begin();
-        iter != GenreList.end(); iter++){
-        ret+=*iter;
+std::string Query::long_str() {
+    std::string ret;
+    ret += title;
+    ret+=std::to_string(year) + std::to_string(runtime);
+    for (std::list<std::string>::iterator iter = GenreList.begin();
+         iter != GenreList.end(); iter++) {
+        ret += (*iter).substr(iter->size()-3);
     }
 
-    for(std::list<std::string>::iterator iter = ActorList.begin();
-        iter != ActorList.end(); iter++){
-        ret+=*iter;
+    for (std::list<std::string>::iterator iter = ActorList.begin();
+         iter != ActorList.end(); iter++) {
+        ret += *iter;
     }
-}
-
-/*
-The recursive function will generate every combination of 0/1 for 6 positions
-in a vector. Whenever pos == 6, the vector is complete.
-Hint: There are 6 different "fields" in a query, this may be useful in constructing
-your hash table.
-*/
-// Wrapping a class around a function turns a function into a functor
-// (We'll talk about this more in Lecture 22.  You can just ignore
-// this wrapper part for now.)
-void permute_filters(int pos, std::vector<int> filter){
-    if(pos == 6){
-        //Add other code here if you want to use the completed vectors
-        return;
-    }
-
-    filter.push_back(0);
-    std::vector<int> filter_new = filter;
-    filter_new.back() = 1;
-    permute_filters(pos+1, filter_new);
-    permute_filters(pos+1, filter);
-}
-
-//Driver function, feel free to modify to pass more arguments
-void permute_filters(){
-    permute_filters(0, std::vector<int>());
+    return ret;
 }
