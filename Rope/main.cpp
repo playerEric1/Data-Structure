@@ -14,37 +14,11 @@ Node* ConcatTestRopeRight();
 int main(){
 	BasicTests();
 	std::cout << "***Basic tests passed." << std::endl;
-//	StudentTests();
-//	std::cout << "***Student tests passed." << std::endl;
 	return 0;
 }
 
-void StudentTests(){
-	/* ADD YOUR TESTS HERE
-	 * MAKE SURE TO TEST FUNCTIONS THOROUGHLY
-	 * CONSIDER CORNER CASES, ETC.
-	 * THESE TESTS SHOULD NOT CAUSE A CRASH.
-	 */
-    Rope r4(IndexTestRope());
-    std::string s4 = "Hello my name is Simon";
-    Rope r5;
-    std::string s5 = s4.substr(0,21);
-    std::string s6 = s4.substr(21,21);
-    r4.split(21,r5);
-    r4.print_strings(std::cout);
-    r4.print(std::cout);
-    r5.print_strings(std::cout);
-    r5.print(std::cout);
-    assert(SAME(r4,s5));
-    assert(SAME(r5,s6));
-    std::cout << std::endl;
-}
-
 //Used to compare a string and a rope that should be the same.
-//You can uncomment the .report assert to test report on the whole string
 bool SAME(const Rope& r, const std::string& s){
-	/*std::cout << "Comparing string \"" << s << "\" to Rope:" << std::endl;
-	r.print(std::cout);*/
 	assert(r.size() == (int)s.length() && "ERROR: ROPE SIZE DOES NOT MATCH STRING SIZE");
 	char c;
 	for(unsigned int i=0; i<s.size(); i++){
@@ -77,12 +51,6 @@ bool ValidRope(Node* root){
 
 	//Check my weight if I'm not a leaf
 	if(root->left){
-		/* ON SUBMITTY, THE INSTRUCTOR VERSION OF THE CODE
-		 * IMPLEMENTS countWeights(). IF YOU ALSO WANT TO
-		 * USE THIS CODE YOU WILL NEED TO IMPLEMENT countWeights().
-		 * YOU MAY FIND USING assert() STATEMENTS OR PRINTING SPECIFIC
-		 * ERRORS HELPFUL FOR DEBUGGING.
-		 */
 		left_sub = countWeights(root->left);
 	}
 
@@ -90,15 +58,7 @@ bool ValidRope(Node* root){
 }
 
 int countWeights(Node* root){
-	/* ON SUBMITTY, THE INSTRUCTOR VERSION OF THE CODE
-	 * IMPLEMENTS countWeights(). YOU DO NOT NEED TO MAKE
-	 * YOUR IMPLEMENTATION TO RECEIVE FULL CREDIT.
-	 * YOU MAY WANT TO IMPLEMENT THIS FUNCTION SO THAT YOU CAN
-	 * USE ValidRope() IN YOUR OWN TESTING.
-	 */
-
-	// Remove this assert if you actually implement countWeights()
-	assert(0 && "countWeights() HAS NOT BEEN IMPLEMENTED");
+	return 0;
 }
 
 void BasicTests(){

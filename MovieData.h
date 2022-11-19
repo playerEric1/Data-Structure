@@ -7,8 +7,8 @@
 #include <cassert>
 #include <set>
 
-#ifndef HW9_MOVIEDATA_H
-#define HW9_MOVIEDATA_H
+#ifndef MDATA_H
+#define MDATA_H
 
 //Title Year of Release Runtime in Minutes GenreCount GenreList ActorCount ActorList RoleCount RoleList
 class MovieData {
